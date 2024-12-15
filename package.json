@@ -12,6 +12,7 @@
         "fireline.js",
         "livewire"
     ],
+    "license": "MIT",
     "module": "dist/module.esm.js",
     "unpkg": "dist/cdn.min.js",
     "scripts": {
