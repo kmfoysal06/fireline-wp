@@ -175,7 +175,7 @@ export default (Alpine) => {
     });
 
     // Handle back/forward navigation
-    window.addEventListener('popstate', () => navigateTo(window.location.href));
+    window.addEventListener('popstate', () => navigateTo(window.location.href, false));
 
     // Intercept links click and handle navigation
     window.document.body.addEventListener('click', (event) => {

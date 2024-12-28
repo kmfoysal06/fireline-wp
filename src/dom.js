@@ -4,7 +4,7 @@
  * This function takes the HTML response from the server and creates a new
  * template element from it. It then gets the first element from the created
  * template element and injects any script elements found into the document
- * head using the `injectScript` function. After the scripts are injected, it
+ * head using the `injectScripts` function. After the scripts are injected, it
  * replaces the current content of the router's target element with the new
  * content using the `diffAndPatch` function.
  * 
@@ -23,7 +23,7 @@ export function replaceHtml(targetEl, html) {
     const scripts = newContent.querySelectorAll('script');
 
     // Inject the scripts into the DOM
-    injectScript(scripts);
+    injectScripts(scripts);
 
     // Replace the current router content with the new content
     diffAndPatch(targetEl.parentElement, targetEl, newContent);
@@ -41,7 +41,7 @@ export function replaceHtml(targetEl, html) {
  * 
  * @param {HTMLScriptElement[]} scripts - The list of script elements to inject.
  */
-export function injectScript(scripts) {
+export function injectScripts(scripts) {
     // Process scripts separately
     scripts.forEach(scriptElement => {
         const script = document.createElement('script');

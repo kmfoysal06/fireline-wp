@@ -38,6 +38,17 @@ export async function ajaxRequest(path, method = 'get', body = null) {
         if (!response.ok)
             throw new Error('Failed to complete the FireLine request.');
 
+        // Check for redirection
+        if (!response.url.endsWith(path)) {
+            const redirectedUrl = new URL(response.url);
+
+            // If the redirected origin matches the current origin
+            if (window.location.origin === redirectedUrl.origin) {
+                // Update the browser history with the redirected URL
+                window.history.pushState({}, '', redirectedUrl);
+            }
+        }
+
         // Return the JSON response
         // If the response is invalid JSON, catch the error and log it to the console
         return await response.json()

@@ -52,7 +52,7 @@ export function safeReplaceHtml(html) {
 export function replaceRouterHtml(html) {
     // Get the router target element and throw an error if it's not found
     const targetEl = document.querySelector(window.FireLine.settings.targetEl);
-    
+
     // Throw an error if the target element is not found
     if (!targetEl)
         throw new Error('Router target element not found.');

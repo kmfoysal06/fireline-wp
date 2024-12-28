@@ -12,16 +12,15 @@ import { safeReplaceHtml } from "./helpers";
  * Finally, the loading state is set to false.
  * 
  * @param {string} url - The URL to navigate to.
+ * @param {boolean} pushState - Whether to update the browser's history state.
  * @returns {void}
  */
-export function navigateTo(url) {
+export function navigateTo(url, pushState = true) {
     // Fetch the page content as JSON
     ajaxRequest(url)
         .then(response => {
             // If the response is invalid then do nothing
-            if (!response) {
-                return;
-            }
+            if (!response) return;
 
             // Extract HTML and title from the response
             const { html, title } = response;
@@ -35,7 +34,11 @@ export function navigateTo(url) {
             // When the content is updated, wait for the next tick
             Alpine.nextTick(() => {
                 // Update the browser's history state and fire the 'current' route
-                window.history.pushState({}, '', url);
+                if (pushState) {
+                    window.history.pushState({}, '', url);
+                }
+
+                // Update the current route
                 window.FireLine.context.current = window.location.href;
 
                 // Fire the 'loadEnd' event
@@ -73,13 +76,11 @@ export function formSubmission(formEl) {
     ajaxRequest(formEl.getAttribute('action'), formEl.getAttribute('method'), new FormData(formEl))
         .then(response => {
             // If the response is invalid then do nothing
-            if (!response) {
-                return;
-            }
+            if (!response) return;
 
             // If the response contains a "status" property set to "success", reset the form
             if (response.status && response.status === 'success') {
-                form.reset();
+                formEl.reset();
             }
 
             // If the response contains a "redirect" property, redirect the window to the specified URL
@@ -100,7 +101,7 @@ export function formSubmission(formEl) {
             // If the response contains a "status" property set to "error", display the error message next to the form fields
             else if (response.status && response.message) {
                 // Loop through the form's children
-                for (const child of form.children) {
+                for (const child of formEl.children) {
                     // If the child has a "status" attribute
                     child.attributes.status && (
                         // If the child's status attribute matches the response's status
@@ -117,6 +118,9 @@ export function formSubmission(formEl) {
             else if (response.html) {
                 // Update the document title
                 if (response.title) document.title = response.title;
+
+                // Reset the form
+                formEl.reset();
 
                 // Update the router content
                 safeReplaceHtml(response.html);
