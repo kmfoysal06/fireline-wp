@@ -67,6 +67,12 @@ export default (Alpine) => {
              */
             loading: false,
 
+            /** 
+             * Indicates if the router is currently redirected.
+             * @type {URL} - The redirected url
+             */
+            redirectedUrl: undefined,
+
             /**
              * Navigates to the specified URL.
              * @param {string} url - The URL to navigate to.
@@ -90,7 +96,7 @@ export default (Alpine) => {
              * @param {HTMLFormElement} formEl - The form element to be submitted. 
              * @returns {void}
              */
-            formSubmit: (formEl) => formSubmission(formEl)
+            formSubmit: (formEl) => formSubmission(formEl),
         }
     });
 

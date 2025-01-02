@@ -18,6 +18,9 @@ export async function ajaxRequest(path, method = 'get', body = null) {
     // Fire the 'start' event
     document.dispatchEvent(window.FireLine.events.start);
 
+    // Reset the redirected URL
+    window.FireLine.redirectedUrl = undefined;
+
     // Set the loading state to true
     window.FireLine.context.loading = true;
 
@@ -46,6 +49,9 @@ export async function ajaxRequest(path, method = 'get', body = null) {
             if (window.location.origin === redirectedUrl.origin) {
                 // Update the browser history with the redirected URL
                 window.history.pushState({}, '', redirectedUrl);
+
+                // Set the redirected URL
+                window.FireLine.redirectedUrl = redirectedUrl;
             }
         }
 

@@ -34,9 +34,8 @@ export function navigateTo(url, pushState = true) {
             // When the content is updated, wait for the next tick
             Alpine.nextTick(() => {
                 // Update the browser's history state and fire the 'current' route
-                if (pushState) {
+                if (pushState && window.FireLine.redirectedUrl === undefined)
                     window.history.pushState({}, '', url);
-                }
 
                 // Update the current route
                 window.FireLine.context.current = window.location.href;
@@ -79,14 +78,12 @@ export function formSubmission(formEl) {
             if (!response) return;
 
             // If the response contains a "status" property set to "success", reset the form
-            if (response.status && response.status === 'success') {
+            if (response.status && response.status === 'success')
                 formEl.reset();
-            }
 
             // If the response contains a "redirect" property, redirect the window to the specified URL
-            if (response.redirect) {
+            if (response.redirect)
                 window.location.href = response.redirect;
-            }
 
             // If the response contains a "navigate" property, navigate to the specified url
             else if (response.navigate) {
