@@ -43,6 +43,10 @@ export function navigateTo(url, pushState = true) {
                 // Fire the 'loadEnd' event
                 document.dispatchEvent(window.FireLine.events.end);
 
+                // Fire the 'onNavigation' event
+                if (window.FireLine.redirectedUrl === undefined)
+                    document.dispatchEvent(window.FireLine.events.navigate);
+
                 // Set the loading state to false
                 window.FireLine.context.loading = false;
             });

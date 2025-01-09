@@ -28,6 +28,7 @@ export default (Alpine) => {
             start: new Event('fireStart'), // Event triggered at the start of loading
             end: new Event('fireEnd'), // Event triggered at the end of loading
             error: new Event('fireError'), // Event triggered on load error
+            navigate: new Event('fireNavigate'), // Event triggered on navigation
         },
         settings: {
             /**

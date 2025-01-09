@@ -52,6 +52,9 @@ export async function ajaxRequest(path, method = 'get', body = null) {
 
                 // Set the redirected URL
                 window.FireLine.redirectedUrl = redirectedUrl;
+
+                // Fire the 'onNavigation' event
+                document.dispatchEvent(window.FireLine.events.navigate);
             }
         }
 
