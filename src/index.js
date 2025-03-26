@@ -184,6 +184,9 @@ export default (Alpine) => {
     // Handle back/forward navigation
     window.addEventListener('popstate', () => navigateTo(window.location.href, false));
 
+    // Reload the page when browser load the page from cache
+    window.addEventListener('pageshow', e => e.persisted && window.location.reload());
+
     // Intercept links click and handle navigation
     window.document.body.addEventListener('click', (event) => {
         // Intercept links only if the setting is enabled
