@@ -108,7 +108,7 @@ export function formSubmission(formEl) {
                         // If the child's status attribute matches the response's status
                         child.attributes.status.nodeValue === response.status ?
                             // Display the status message
-                            (child.textContent = response.message, child.style.display = 'block') :
+                            (child.innerHTML = response.message, child.style.display = 'block') :
                             // Hide the status message
                             (child.textContent = '', child.style.display = 'none')
                     );

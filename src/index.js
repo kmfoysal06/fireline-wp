@@ -47,13 +47,13 @@ export default (Alpine) => {
              * Indicates if the router should intercept links and handle navigation.
              * @type {boolean}
              */
-            interceptLinks: true,
+            interceptLinks: false,
 
             /** 
              * Indicate if the form should be intercepted and handled.
              * @type {boolean}
              */
-            interceptForms: true,
+            interceptForms: false,
         },
         context: {
             /**
