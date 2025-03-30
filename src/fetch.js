@@ -30,7 +30,7 @@ export async function ajaxRequest(path, method = 'get', body = null) {
             // Set the request method
             method: method,
             // Set the request headers
-            headers: { "Accept": "application/json" },
+            headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest", "X-Fireline-Agent": true },
             // Set the request body if provided
             body: body,
             // Abort the request after this.timeout seconds
