@@ -2,6 +2,25 @@
 
 All notable changes to FireLine and FireLine SPA WordPress Plugin will be documented in this file.
 
+## [1.0.2] - 2025-10-16
+
+### WordPress Plugin - Bug Fix
+
+#### Fixed
+- **Critical**: Fixed "Router target element not found" error
+  - Error occurred when target element detection failed or happened after navigation attempts
+  - Added robust fallback mechanism that tries multiple common WordPress selectors
+  - Target element detection now happens at multiple stages (alpine:init, DOMContentLoaded, and delayed retry)
+  - Added 'body' as ultimate fallback to ensure plugin always has a valid target
+  - Improved error messages to help debug theme compatibility issues
+
+#### Technical Details
+- Extracted target element detection into reusable `detectAndSetTargetElement()` function
+- Added multiple detection attempts to handle different loading scenarios
+- `replaceRouterHtml()` now tries fallback selectors (#content, #main, #primary, .site-content, .content-area, body) if initial target not found
+- Added console warnings when falling back to different selectors for debugging
+- Enhanced error message to show which selector was attempted
+
 ## [1.0.1] - 2025-10-16
 
 ### WordPress Plugin - Bug Fix
