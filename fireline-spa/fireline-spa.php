@@ -32,10 +32,12 @@ class FireLine_SPA_Plugin {
      * Constructor
      */
     public function __construct() {
+        // Hook early to start output buffering before any output
+        add_action('template_redirect', array($this, 'handle_fireline_request'), 1);
+        
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('wp_head', array($this, 'add_spa_meta'));
         add_filter('script_loader_tag', array($this, 'add_defer_attribute'), 10, 2);
-        add_action('template_redirect', array($this, 'handle_fireline_request'));
     }
     
     /**
@@ -105,19 +107,32 @@ class FireLine_SPA_Plugin {
             return;
         }
         
-        // Start output buffering to capture the page HTML
+        // Start output buffering to capture ALL page output
+        // This needs to happen before ANY output is sent
         ob_start();
         
-        // Hook into wp_footer to capture and return JSON
-        add_action('wp_footer', array($this, 'return_json_response'), 999999);
+        // Hook into shutdown (latest possible point) to capture and return JSON
+        // This ensures we capture everything but can still set headers
+        add_action('shutdown', array($this, 'return_json_response'), 0);
     }
     
     /**
      * Capture page content and return as JSON
      */
     public function return_json_response() {
-        // Get the buffered content
-        $html = ob_get_clean();
+        // Check if headers have already been sent (shouldn't happen with shutdown, but check anyway)
+        if (headers_sent($file, $line)) {
+            // Headers already sent, we can't send JSON headers
+            // This shouldn't happen with our approach, but log for debugging
+            error_log("FireLine: Headers already sent in $file on line $line");
+            return;
+        }
+        
+        // Get ALL buffered content (there may be multiple levels)
+        $html = '';
+        while (ob_get_level() > 0) {
+            $html = ob_get_clean() . $html;
+        }
         
         // Extract the title from the HTML
         $title = '';
@@ -144,11 +159,6 @@ class FireLine_SPA_Plugin {
             'title' => $title
         );
         
-        // Clear all output buffers
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-        
         // Send JSON headers
         status_header(200);
         header('Content-Type: application/json; charset=utf-8');
@@ -157,7 +167,7 @@ class FireLine_SPA_Plugin {
         // Output JSON and exit
         $json = json_encode($response);
         if ($json === false) {
-            // Handle JSON encoding error - use content_html instead of full html
+            // Handle JSON encoding error
             $error_message = 'JSON encoding failed: ' . json_last_error_msg();
             $json = json_encode(array(
                 'html' => $content_html,
