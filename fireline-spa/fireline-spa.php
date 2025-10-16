@@ -158,10 +158,11 @@ class FireLine_SPA_Plugin {
         $json = json_encode($response);
         if ($json === false) {
             // Handle JSON encoding error - use content_html instead of full html
+            $error_message = 'JSON encoding failed: ' . json_last_error_msg();
             $json = json_encode(array(
                 'html' => $content_html,
                 'title' => $title,
-                'error' => 'Content encoding issue - using fallback'
+                'error' => $error_message
             ));
         }
         
