@@ -12,6 +12,30 @@ import FireLine from '../fireline/src/index.js';
 // Import NProgress
 import NProgress from 'nprogress';
 
+// Default target element selector (from FireLine defaults)
+const DEFAULT_TARGET_SELECTOR = '#app > div';
+
+// Common WordPress content container selectors
+// Ordered from most specific to least specific
+const WORDPRESS_CONTENT_SELECTORS = [
+    '#content > article',
+    '#content > div',
+    '#content',
+    '#main > article',
+    '#main > div', 
+    '#main',
+    '#primary > article',
+    '#primary > div',
+    '#primary',
+    '.site-content > article',
+    '.site-content > div',
+    '.site-content',
+    '.content-area > article',
+    '.content-area > div',
+    '.content-area',
+    'body' // Ultimate fallback
+];
+
 // Configure NProgress
 NProgress.configure({ 
     showSpinner: false,
@@ -25,34 +49,14 @@ NProgress.configure({
  */
 function detectAndSetTargetElement() {
     // If target element is already set and exists, don't change it
-    if (window.FireLine && window.FireLine.settings.targetEl !== '#app > div') {
+    if (window.FireLine && window.FireLine.settings.targetEl !== DEFAULT_TARGET_SELECTOR) {
         const existing = document.querySelector(window.FireLine.settings.targetEl);
         if (existing) {
             return;
         }
     }
     
-    // WordPress typically wraps content in #content, .site-content, or similar
-    const possibleTargets = [
-        '#content > article',
-        '#content > div',
-        '#content',
-        '#main > article',
-        '#main > div', 
-        '#main',
-        '#primary > article',
-        '#primary > div',
-        '#primary',
-        '.site-content > article',
-        '.site-content > div',
-        '.site-content',
-        '.content-area > article',
-        '.content-area > div',
-        '.content-area',
-        'body' // Ultimate fallback
-    ];
-    
-    for (const selector of possibleTargets) {
+    for (const selector of WORDPRESS_CONTENT_SELECTORS) {
         const element = document.querySelector(selector);
         if (element) {
             if (window.FireLine) {

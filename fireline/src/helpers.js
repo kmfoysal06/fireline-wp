@@ -1,5 +1,26 @@
 import { replaceHtml } from "./dom";
 
+// Common WordPress content container selectors for fallback
+// This matches the order in plugin-src/main.js
+const FALLBACK_SELECTORS = [
+    '#content > article',
+    '#content > div',
+    '#content',
+    '#main > article',
+    '#main > div', 
+    '#main',
+    '#primary > article',
+    '#primary > div',
+    '#primary',
+    '.site-content > article',
+    '.site-content > div',
+    '.site-content',
+    '.content-area > article',
+    '.content-area > div',
+    '.content-area',
+    'body'
+];
+
 /**
  * Triggers an error for the router, logging the error to the console,
  * firing the 'error' event, and setting the loading state to false.
@@ -50,18 +71,27 @@ export function safeReplaceHtml(html) {
  * @throws {Error} If the router target element is not found.
  */
 export function replaceRouterHtml(html) {
+    // Store the original target selector for debugging
+    const originalTargetSelector = window.FireLine.settings.targetEl;
+    
     // Get the router target element and throw an error if it's not found
-    let targetEl = document.querySelector(window.FireLine.settings.targetEl);
+    let targetEl = document.querySelector(originalTargetSelector);
 
     // If target element is not found, try to fallback to common selectors
     if (!targetEl) {
-        const fallbackSelectors = ['#content', '#main', '#primary', '.site-content', '.content-area', 'body'];
-        
-        for (const selector of fallbackSelectors) {
+        for (const selector of FALLBACK_SELECTORS) {
             targetEl = document.querySelector(selector);
             if (targetEl) {
-                console.warn(`FireLine: Target element '${window.FireLine.settings.targetEl}' not found, falling back to '${selector}'`);
+                console.warn(
+                    `FireLine: Target element '${originalTargetSelector}' not found, ` +
+                    `falling back to '${selector}'. Consider updating your FireLine configuration.`
+                );
+                // Update the setting for future navigations
                 window.FireLine.settings.targetEl = selector;
+                // Store original selector as a reference for debugging
+                if (!window.FireLine.settings._originalTargetEl) {
+                    window.FireLine.settings._originalTargetEl = originalTargetSelector;
+                }
                 break;
             }
         }
@@ -69,7 +99,10 @@ export function replaceRouterHtml(html) {
 
     // Throw an error if the target element is still not found
     if (!targetEl) {
-        throw new Error(`Router target element not found. Tried selector: '${window.FireLine.settings.targetEl}'. Please ensure your theme has a valid content container element.`);
+        throw new Error(
+            `Router target element not found. Tried selector: '${originalTargetSelector}'. ` +
+            `Please ensure your theme has a valid content container element.`
+        );
     }
 
     // Replace the targetEl with the provided HTML
