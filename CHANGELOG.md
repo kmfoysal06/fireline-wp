@@ -2,6 +2,24 @@
 
 All notable changes to FireLine and FireLine SPA WordPress Plugin will be documented in this file.
 
+## [1.0.1] - 2025-10-16
+
+### WordPress Plugin - Bug Fix
+
+#### Fixed
+- **Critical**: Fixed JSON parsing error when clicking links in WordPress SPA mode
+  - Previously, FireLine requests were receiving HTML instead of JSON responses
+  - Error: "SyntaxError: Unexpected token '<', "<!doctype "... is not valid JSON"
+  - Solution: Changed from `wp_footer` hook to `shutdown` hook to properly capture output before headers are sent
+  - Improved output buffer handling to capture all buffer levels
+  - Added `headers_sent()` check for better error detection and debugging
+
+#### Technical Details
+- Changed WordPress hook from `wp_footer` to `shutdown` for JSON response handling
+- Output buffering now starts earlier in `template_redirect` with priority 1
+- Properly handles multiple output buffer levels
+- Headers are now sent before any output is flushed, preventing HTML response
+
 ## [1.0.0] - 2025-10-16
 
 ### WordPress Plugin - Initial Release

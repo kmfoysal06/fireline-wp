@@ -3,7 +3,7 @@
  * Plugin Name: FireLine SPA
  * Plugin URI: https://github.com/kmfoysal06/fireline-wp
  * Description: Transform your WordPress site into a Single Page Application (SPA) with smooth page transitions and a beautiful progress bar. Powered by FireLine and Alpine.js.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: FireLine
  * Author URI: https://github.com/kmfoysal06
  * License: MIT
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('FIRELINE_SPA_VERSION', '1.0.0');
+define('FIRELINE_SPA_VERSION', '1.0.1');
 define('FIRELINE_SPA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FIRELINE_SPA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
