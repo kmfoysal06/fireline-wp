@@ -112,21 +112,21 @@ function detectAndSetTargetElement() {
     
     // Hook into FireLine events to show/hide progress bar
     document.addEventListener('fireStart', () => {
-        // Only start NProgress if the body element exists
+        // Prevent NProgress appendChild error when body element doesn't exist yet
         if (document.body) {
             NProgress.start();
         }
     });
     
     document.addEventListener('fireEnd', () => {
-        // Only call done if the body element exists
+        // Prevent NProgress appendChild error when body element doesn't exist yet
         if (document.body) {
             NProgress.done();
         }
     });
     
     document.addEventListener('fireError', () => {
-        // Only call done if the body element exists
+        // Prevent NProgress appendChild error when body element doesn't exist yet
         if (document.body) {
             NProgress.done();
         }
