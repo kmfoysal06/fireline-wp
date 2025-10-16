@@ -2,6 +2,8 @@
 
 Transform your WordPress site into a Single Page Application (SPA) with smooth page transitions and a beautiful progress bar.
 
+![FireLine SPA Demo](https://github.com/user-attachments/assets/2c7303ba-2ca3-4148-9ed5-f1bdb6a82e91)
+
 ## Features
 
 - 🚀 **SPA-like Experience**: Pages load instantly without full page refreshes
