@@ -17,6 +17,9 @@ const DEFAULT_TARGET_SELECTOR = '#app > div';
 
 // Common WordPress content container selectors
 // Ordered from most specific to least specific
+// NOTE: This list is also defined in fireline/src/helpers.js as FALLBACK_SELECTORS
+// for runtime fallback. The duplication is intentional to keep the FireLine core
+// library independent of WordPress-specific code.
 const WORDPRESS_CONTENT_SELECTORS = [
     '#content > article',
     '#content > div',

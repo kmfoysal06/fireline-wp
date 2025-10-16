@@ -1,7 +1,10 @@
 import { replaceHtml } from "./dom";
 
 // Common WordPress content container selectors for fallback
-// This matches the order in plugin-src/main.js
+// NOTE: This list is intentionally duplicated from plugin-src/main.js to keep
+// the FireLine core library independent and reusable outside of WordPress.
+// The plugin-src/main.js file handles initial detection, while this provides
+// runtime fallback for the core library.
 const FALLBACK_SELECTORS = [
     '#content > article',
     '#content > div',
