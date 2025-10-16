@@ -101,9 +101,7 @@ class FireLine_SPA_Plugin {
      */
     public function handle_fireline_request() {
         // Check if this is a FireLine AJAX request
-        $fireline_agent = isset($_SERVER['HTTP_X_FIRELINE_AGENT']) ? wp_unslash($_SERVER['HTTP_X_FIRELINE_AGENT']) : false;
-        
-        if (!$fireline_agent || is_admin()) {
+        if (!isset($_SERVER['HTTP_X_FIRELINE_AGENT']) || is_admin()) {
             return;
         }
         
@@ -159,11 +157,11 @@ class FireLine_SPA_Plugin {
         // Output JSON and exit
         $json = json_encode($response);
         if ($json === false) {
-            // Handle JSON encoding error
+            // Handle JSON encoding error - use content_html instead of full html
             $json = json_encode(array(
-                'html' => $html,
+                'html' => $content_html,
                 'title' => $title,
-                'error' => 'Content encoding failed'
+                'error' => 'Content encoding issue - using fallback'
             ));
         }
         
@@ -237,8 +235,8 @@ class FireLine_SPA_Plugin {
             // If looking for a child element
             if (isset($selector['child'])) {
                 $child_tag = $selector['child'];
-                // Use XPath to directly find the first child element
-                $child_nodes = $xpath->query('.//' . $child_tag, $parent_node);
+                // Use XPath to find the first direct child element of the specified tag
+                $child_nodes = $xpath->query('./*[name()="' . $child_tag . '"]', $parent_node);
                 if ($child_nodes !== false && $child_nodes->length > 0) {
                     return $dom->saveHTML($child_nodes->item(0));
                 }
