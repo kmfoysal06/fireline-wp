@@ -2,23 +2,48 @@
 
 **FireLine** is a powerful Alpine.js plugin that enhances your web applications with advanced reactivity, seamless integration, and features like server-side rendering of Alpine.js components, form handling, and a robust router.
 
-## WordPress Plugin
+---
 
-This repository includes **FireLine SPA** - a WordPress plugin that transforms your WordPress site into a Single Page Application with smooth page transitions and a beautiful progress bar.
+## 🚀 WordPress Plugin - FireLine SPA
 
-👉 **[See the WordPress Plugin README](fireline-spa/README.md)** for installation and usage instructions.
+This repository includes **FireLine SPA** - a WordPress plugin that transforms your WordPress site into a modern Single Page Application with smooth page transitions and a beautiful progress bar.
 
-### Quick Start (WordPress)
+### ✨ Features
 
-1. Clone this repository
-2. Run `npm install && npm run build`
-3. Copy the `fireline-spa` folder to your WordPress `/wp-content/plugins/` directory
-4. Activate the plugin in WordPress
-5. Your site now works like a SPA! 🚀
+- ⚡ **Lightning Fast**: Pages load without full browser refresh
+- 📊 **Beautiful Progress Bar**: NProgress bar shows loading status
+- 🔧 **Zero Configuration**: Just install and activate - works automatically
+- 🎨 **Theme Compatible**: Works with any WordPress theme
+- 🛡️ **Admin Safe**: Preserves all WordPress admin functionality
+- 📦 **Lightweight**: Only ~13KB total
+
+### 📥 Quick Start (WordPress)
+
+```bash
+# 1. Clone and build
+git clone https://github.com/kmfoysal06/fireline-wp.git
+cd fireline-wp
+npm install && npm run build
+
+# 2. Install to WordPress
+cp -r fireline-spa /path/to/wordpress/wp-content/plugins/
+
+# 3. Activate in WordPress Admin → Plugins
+
+# Done! Your site now works like a SPA! 🎉
+```
+
+👉 **[Complete Installation Guide](INSTALLATION.md)**  
+👉 **[WordPress Plugin Documentation](fireline-spa/README.md)**  
+👉 **[View Demo](demo.html)** (open in browser)
+
+### 📸 Demo
+
+Open `demo.html` in your browser to see the plugin features and design.
 
 ---
 
-## FireLine Library  
+## 📚 FireLine Library Documentation  
 
 ## Features
 

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireLine SPA Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 10px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        nav {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+            margin-top: 60px;
+        }
+        
+        .progress-demo {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .loading-indicator {
+            display: inline-block;
+            width: 200px;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .loading-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            to {
+                left: 150%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <header>
+            <h1>🔥 FireLine SPA</h1>
+            <p class="subtitle">Transform Your WordPress Into a Lightning-Fast Single Page Application</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#docs">Documentation</a></li>
+                <li><a href="#install">Install</a></li>
+            </ul>
+        </nav>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>Pages load instantly without full browser refresh. Your users will love the speed!</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Zero Config</h3>
+                <p>Just install and activate. The plugin automatically detects your theme structure.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Beautiful Progress</h3>
+                <p>Smooth NProgress bar at the top shows loading status in style.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>Theme Compatible</h3>
+                <p>Works with any WordPress theme out of the box. No modifications needed.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Admin Safe</h3>
+                <p>WordPress admin area and functionality remain completely untouched.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <h3>Lightweight</h3>
+                <p>Only 13KB total. No bloat, just pure performance enhancement.</p>
+            </div>
+        </div>
+        
+        <div class="progress-demo">
+            <h2>See It In Action</h2>
+            <p>This is what the progress bar looks like when you navigate:</p>
+            <div class="loading-indicator"></div>
+            <p><small>Smooth, minimal, and beautiful</small></p>
+        </div>
+        
+        <div class="cta-section">
+            <h2>Ready to Transform Your WordPress Site?</h2>
+            <p>Get started in under 2 minutes. No coding required!</p>
+            <a href="#install" class="cta-button">Download FireLine SPA</a>
+        </div>
+        
+        <section style="padding: 40px 0;">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">How It Works</h2>
+            <div style="background: #f8f9fa; padding: 30px; border-radius: 10px;">
+                <ol style="line-height: 2; padding-left: 20px;">
+                    <li><strong>Install & Activate:</strong> Add the plugin to WordPress and activate it</li>
+                    <li><strong>Auto-Detection:</strong> Plugin automatically finds your theme's content area</li>
+                    <li><strong>Link Interception:</strong> Internal links are caught and loaded via AJAX</li>
+                    <li><strong>Progress Display:</strong> Beautiful bar shows at the top during loads</li>
+                    <li><strong>Content Swap:</strong> Only the main content updates, keeping everything else</li>
+                    <li><strong>URL Update:</strong> Browser URL updates, history works perfectly</li>
+                </ol>
+            </div>
+        </section>
+        
+        <footer>
+            <p><strong>FireLine SPA</strong> - Powered by FireLine & Alpine.js</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/kmfoysal06/fireline-wp" style="color: #667eea; text-decoration: none;">
+                    View on GitHub →
+                </a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
