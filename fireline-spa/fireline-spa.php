@@ -101,7 +101,9 @@ class FireLine_SPA_Plugin {
      */
     public function handle_fireline_request() {
         // Check if this is a FireLine AJAX request
-        if (!isset($_SERVER['HTTP_X_FIRELINE_AGENT']) || is_admin()) {
+        $fireline_agent = isset($_SERVER['HTTP_X_FIRELINE_AGENT']) ? wp_unslash($_SERVER['HTTP_X_FIRELINE_AGENT']) : false;
+        
+        if (!$fireline_agent || is_admin()) {
             return;
         }
         
@@ -144,17 +146,28 @@ class FireLine_SPA_Plugin {
             'title' => $title
         );
         
-        // Clear any previous output
-        if (ob_get_level()) {
+        // Clear all output buffers
+        while (ob_get_level() > 0) {
             ob_end_clean();
         }
         
         // Send JSON headers
-        header('Content-Type: application/json');
+        status_header(200);
+        header('Content-Type: application/json; charset=utf-8');
         header('X-Fireline-Response: true');
         
         // Output JSON and exit
-        echo json_encode($response);
+        $json = json_encode($response);
+        if ($json === false) {
+            // Handle JSON encoding error
+            $json = json_encode(array(
+                'html' => $html,
+                'title' => $title,
+                'error' => 'Content encoding failed'
+            ));
+        }
+        
+        echo $json;
         exit;
     }
     
@@ -185,13 +198,16 @@ class FireLine_SPA_Plugin {
         $dom = new DOMDocument();
         
         // Suppress errors from malformed HTML
-        libxml_use_internal_errors(true);
+        $previous_error_handling = libxml_use_internal_errors(true);
         
-        // Load HTML with UTF-8 encoding
-        $dom->loadHTML('<?xml encoding="UTF-8">' . $html);
+        // Load HTML with proper flags to handle HTML5
+        $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         
         // Clear errors
         libxml_clear_errors();
+        
+        // Restore previous error handling
+        libxml_use_internal_errors($previous_error_handling);
         
         $xpath = new DOMXPath($dom);
         
@@ -211,20 +227,23 @@ class FireLine_SPA_Plugin {
             
             $nodes = $xpath->query($query);
             
-            if ($nodes && $nodes->length > 0) {
-                $parent_node = $nodes->item(0);
-                
-                // If looking for a child element
-                if (isset($selector['child'])) {
-                    $child_tag = $selector['child'];
-                    foreach ($parent_node->childNodes as $child) {
-                        if ($child->nodeType === XML_ELEMENT_NODE && $child->nodeName === $child_tag) {
-                            return $dom->saveHTML($child);
-                        }
-                    }
-                } else {
-                    return $dom->saveHTML($parent_node);
+            // Check if query failed
+            if ($nodes === false || $nodes->length === 0) {
+                continue;
+            }
+            
+            $parent_node = $nodes->item(0);
+            
+            // If looking for a child element
+            if (isset($selector['child'])) {
+                $child_tag = $selector['child'];
+                // Use XPath to directly find the first child element
+                $child_nodes = $xpath->query('.//' . $child_tag, $parent_node);
+                if ($child_nodes !== false && $child_nodes->length > 0) {
+                    return $dom->saveHTML($child_nodes->item(0));
                 }
+            } else {
+                return $dom->saveHTML($parent_node);
             }
         }
         
