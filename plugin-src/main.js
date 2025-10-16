@@ -20,6 +20,53 @@ NProgress.configure({
 });
 
 /**
+ * Auto-detect and set the target element for FireLine
+ * This function tries common WordPress content selectors
+ */
+function detectAndSetTargetElement() {
+    // If target element is already set and exists, don't change it
+    if (window.FireLine && window.FireLine.settings.targetEl !== '#app > div') {
+        const existing = document.querySelector(window.FireLine.settings.targetEl);
+        if (existing) {
+            return;
+        }
+    }
+    
+    // WordPress typically wraps content in #content, .site-content, or similar
+    const possibleTargets = [
+        '#content > article',
+        '#content > div',
+        '#content',
+        '#main > article',
+        '#main > div', 
+        '#main',
+        '#primary > article',
+        '#primary > div',
+        '#primary',
+        '.site-content > article',
+        '.site-content > div',
+        '.site-content',
+        '.content-area > article',
+        '.content-area > div',
+        '.content-area',
+        'body' // Ultimate fallback
+    ];
+    
+    for (const selector of possibleTargets) {
+        const element = document.querySelector(selector);
+        if (element) {
+            if (window.FireLine) {
+                window.FireLine.settings.targetEl = selector;
+                console.log('FireLine SPA: Target element set to', selector);
+            }
+            return selector;
+        }
+    }
+    
+    return null;
+}
+
+/**
  * Initialize FireLine SPA for WordPress
  */
 (function() {
@@ -35,35 +82,26 @@ NProgress.configure({
             window.FireLine.settings.timeout = 30;
             
             // Auto-detect target element
-            // WordPress typically wraps content in #content, .site-content, or similar
-            const possibleTargets = [
-                '#content > article',
-                '#content > div',
-                '#content',
-                '#main > article',
-                '#main > div', 
-                '#main',
-                '#primary > article',
-                '#primary > div',
-                '#primary',
-                '.site-content > article',
-                '.site-content > div',
-                '.site-content',
-                '.content-area > article',
-                '.content-area > div',
-                '.content-area'
-            ];
-            
-            for (const selector of possibleTargets) {
-                const element = document.querySelector(selector);
-                if (element) {
-                    window.FireLine.settings.targetEl = selector;
-                    console.log('FireLine SPA: Target element set to', selector);
-                    break;
-                }
-            }
+            detectAndSetTargetElement();
         }
     });
+    
+    // Also try to detect target element when DOM is ready
+    // This provides a fallback if alpine:init doesn't fire
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.FireLine) {
+                detectAndSetTargetElement();
+            }
+        });
+    } else {
+        // DOM is already ready, detect now
+        setTimeout(() => {
+            if (window.FireLine) {
+                detectAndSetTargetElement();
+            }
+        }, 100);
+    }
     
     // Hook into FireLine events to show/hide progress bar
     document.addEventListener('fireStart', () => {

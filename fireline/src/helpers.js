@@ -51,11 +51,26 @@ export function safeReplaceHtml(html) {
  */
 export function replaceRouterHtml(html) {
     // Get the router target element and throw an error if it's not found
-    const targetEl = document.querySelector(window.FireLine.settings.targetEl);
+    let targetEl = document.querySelector(window.FireLine.settings.targetEl);
 
-    // Throw an error if the target element is not found
-    if (!targetEl)
-        throw new Error('Router target element not found.');
+    // If target element is not found, try to fallback to common selectors
+    if (!targetEl) {
+        const fallbackSelectors = ['#content', '#main', '#primary', '.site-content', '.content-area', 'body'];
+        
+        for (const selector of fallbackSelectors) {
+            targetEl = document.querySelector(selector);
+            if (targetEl) {
+                console.warn(`FireLine: Target element '${window.FireLine.settings.targetEl}' not found, falling back to '${selector}'`);
+                window.FireLine.settings.targetEl = selector;
+                break;
+            }
+        }
+    }
+
+    // Throw an error if the target element is still not found
+    if (!targetEl) {
+        throw new Error(`Router target element not found. Tried selector: '${window.FireLine.settings.targetEl}'. Please ensure your theme has a valid content container element.`);
+    }
 
     // Replace the targetEl with the provided HTML
     replaceHtml(targetEl, html);
