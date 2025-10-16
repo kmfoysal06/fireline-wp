@@ -1,6 +1,24 @@
 # FireLine
 
-**FireLine** is a powerful Alpine.js plugin that enhances your web applications with advanced reactivity, seamless integration, and features like server-side rendering of Alpine.js components, form handling, and a robust router.  
+**FireLine** is a powerful Alpine.js plugin that enhances your web applications with advanced reactivity, seamless integration, and features like server-side rendering of Alpine.js components, form handling, and a robust router.
+
+## WordPress Plugin
+
+This repository includes **FireLine SPA** - a WordPress plugin that transforms your WordPress site into a Single Page Application with smooth page transitions and a beautiful progress bar.
+
+👉 **[See the WordPress Plugin README](fireline-spa/README.md)** for installation and usage instructions.
+
+### Quick Start (WordPress)
+
+1. Clone this repository
+2. Run `npm install && npm run build`
+3. Copy the `fireline-spa` folder to your WordPress `/wp-content/plugins/` directory
+4. Activate the plugin in WordPress
+5. Your site now works like a SPA! 🚀
+
+---
+
+## FireLine Library  
 
 ## Features
 

@@ -1,24 +1,24 @@
 {
-    "name": "fireline",
-    "version": "1.1.0",
-    "description": "An Alpine.js plugin for dynamic client-side routing, form handling, server-side rendering, and global state management.",
-    "keywords": [
-        "Alpine JS",
-        "Alpine JS Plugin",
-        "router",
-        "history",
-        "pushstate",
-        "fireline",
-        "fireline.js",
-        "livewire"
-    ],
-    "license": "MIT",
-    "module": "dist/module.esm.js",
-    "unpkg": "dist/cdn.min.js",
-    "scripts": {
-        "build": "node scripts/build.js"
-    },
-    "devDependencies": {
-        "esbuild": "^0.21.5"
-    }
+  "name": "fireline-spa-wp-plugin",
+  "version": "1.0.0",
+  "description": "WordPress plugin for SPA-like page loading with FireLine and NProgress",
+  "scripts": {
+    "build": "npm run build:fireline && npm run build:plugin",
+    "build:fireline": "cd fireline && npm install && npm run build",
+    "build:plugin": "node build-plugin.js"
+  },
+  "keywords": [
+    "WordPress",
+    "SPA",
+    "FireLine",
+    "NProgress",
+    "Alpine.js"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.21.5"
+  },
+  "dependencies": {
+    "nprogress": "^0.2.0"
+  }
 }

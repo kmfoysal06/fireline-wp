@@ -1,0 +1,101 @@
+/**
+ * FireLine SPA WordPress Plugin - Main Entry Point
+ * 
+ * This file bundles Alpine.js, FireLine, and NProgress to create
+ * a seamless SPA experience for WordPress sites.
+ */
+
+// Import Alpine.js from CDN (we'll load it separately as it's better for WordPress)
+// Import FireLine plugin
+import FireLine from '../fireline/src/index.js';
+
+// Import NProgress
+import NProgress from 'nprogress';
+
+// Configure NProgress
+NProgress.configure({ 
+    showSpinner: false,
+    trickleSpeed: 200,
+    minimum: 0.08
+});
+
+/**
+ * Initialize FireLine SPA for WordPress
+ */
+(function() {
+    // Wait for Alpine to be available
+    document.addEventListener('alpine:init', () => {
+        // Register FireLine plugin
+        if (window.Alpine) {
+            window.Alpine.plugin(FireLine);
+            
+            // Configure FireLine for WordPress
+            window.FireLine.settings.interceptLinks = true;
+            window.FireLine.settings.interceptForms = false; // Keep WordPress form handling
+            window.FireLine.settings.timeout = 30;
+            
+            // Auto-detect target element
+            // WordPress typically wraps content in #content, .site-content, or similar
+            const possibleTargets = [
+                '#content > article',
+                '#content > div',
+                '#content',
+                '#main > article',
+                '#main > div', 
+                '#main',
+                '#primary > article',
+                '#primary > div',
+                '#primary',
+                '.site-content > article',
+                '.site-content > div',
+                '.site-content',
+                '.content-area > article',
+                '.content-area > div',
+                '.content-area'
+            ];
+            
+            for (const selector of possibleTargets) {
+                const element = document.querySelector(selector);
+                if (element) {
+                    window.FireLine.settings.targetEl = selector;
+                    console.log('FireLine SPA: Target element set to', selector);
+                    break;
+                }
+            }
+        }
+    });
+    
+    // Hook into FireLine events to show/hide progress bar
+    document.addEventListener('fireStart', () => {
+        NProgress.start();
+    });
+    
+    document.addEventListener('fireEnd', () => {
+        NProgress.done();
+    });
+    
+    document.addEventListener('fireError', () => {
+        NProgress.done();
+    });
+    
+    // Prevent navigation to WordPress admin URLs
+    document.addEventListener('click', (e) => {
+        const anchor = e.target.closest('a');
+        if (anchor) {
+            const href = anchor.getAttribute('href');
+            // Skip admin links, edit links, and external links
+            if (href && (
+                href.includes('/wp-admin/') ||
+                href.includes('/wp-login.php') ||
+                href.includes('wp-comments-post.php') ||
+                anchor.classList.contains('post-edit-link') ||
+                anchor.hasAttribute('native')
+            )) {
+                // Mark as native so FireLine won't intercept
+                anchor.setAttribute('native', '');
+            }
+        }
+    });
+    
+    console.log('FireLine SPA Plugin initialized for WordPress');
+})();
