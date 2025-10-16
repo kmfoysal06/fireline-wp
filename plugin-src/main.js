@@ -119,14 +119,14 @@ function detectAndSetTargetElement() {
     });
     
     document.addEventListener('fireEnd', () => {
-        // Only call done if NProgress was started (body exists)
+        // Only call done if the body element exists
         if (document.body) {
             NProgress.done();
         }
     });
     
     document.addEventListener('fireError', () => {
-        // Only call done if NProgress was started (body exists)
+        // Only call done if the body element exists
         if (document.body) {
             NProgress.done();
         }
