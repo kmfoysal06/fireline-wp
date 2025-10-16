@@ -35,6 +35,7 @@ class FireLine_SPA_Plugin {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('wp_head', array($this, 'add_spa_meta'));
         add_filter('script_loader_tag', array($this, 'add_defer_attribute'), 10, 2);
+        add_action('template_redirect', array($this, 'handle_fireline_request'));
     }
     
     /**
@@ -93,6 +94,141 @@ class FireLine_SPA_Plugin {
         
         echo '<!-- FireLine SPA Plugin v' . FIRELINE_SPA_VERSION . ' -->' . "\n";
         echo '<meta name="fireline-spa-enabled" content="true">' . "\n";
+    }
+    
+    /**
+     * Handle FireLine AJAX requests and return JSON response
+     */
+    public function handle_fireline_request() {
+        // Check if this is a FireLine AJAX request
+        if (!isset($_SERVER['HTTP_X_FIRELINE_AGENT']) || is_admin()) {
+            return;
+        }
+        
+        // Start output buffering to capture the page HTML
+        ob_start();
+        
+        // Hook into wp_footer to capture and return JSON
+        add_action('wp_footer', array($this, 'return_json_response'), 999999);
+    }
+    
+    /**
+     * Capture page content and return as JSON
+     */
+    public function return_json_response() {
+        // Get the buffered content
+        $html = ob_get_clean();
+        
+        // Extract the title from the HTML
+        $title = '';
+        if (preg_match('/<title>(.*?)<\/title>/is', $html, $title_match)) {
+            $title = html_entity_decode($title_match[1], ENT_QUOTES, 'UTF-8');
+        }
+        
+        // Try to extract just the content area we need
+        // This is based on the selectors in the JavaScript
+        $content_html = $this->extract_content_element($html);
+        
+        // If we couldn't extract a specific content area, use the full body
+        if (empty($content_html)) {
+            if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $html, $body_match)) {
+                $content_html = $body_match[1];
+            } else {
+                $content_html = $html;
+            }
+        }
+        
+        // Create the JSON response
+        $response = array(
+            'html' => $content_html,
+            'title' => $title
+        );
+        
+        // Clear any previous output
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        
+        // Send JSON headers
+        header('Content-Type: application/json');
+        header('X-Fireline-Response: true');
+        
+        // Output JSON and exit
+        echo json_encode($response);
+        exit;
+    }
+    
+    /**
+     * Extract the content element from HTML based on common WordPress selectors
+     */
+    private function extract_content_element($html) {
+        // List of common WordPress content selectors (same as in JavaScript)
+        $selectors = array(
+            array('id' => 'content', 'child' => 'article'),
+            array('id' => 'content', 'child' => 'div'),
+            array('id' => 'content'),
+            array('id' => 'main', 'child' => 'article'),
+            array('id' => 'main', 'child' => 'div'),
+            array('id' => 'main'),
+            array('id' => 'primary', 'child' => 'article'),
+            array('id' => 'primary', 'child' => 'div'),
+            array('id' => 'primary'),
+            array('class' => 'site-content', 'child' => 'article'),
+            array('class' => 'site-content', 'child' => 'div'),
+            array('class' => 'site-content'),
+            array('class' => 'content-area', 'child' => 'article'),
+            array('class' => 'content-area', 'child' => 'div'),
+            array('class' => 'content-area')
+        );
+        
+        // Create a DOMDocument to parse HTML
+        $dom = new DOMDocument();
+        
+        // Suppress errors from malformed HTML
+        libxml_use_internal_errors(true);
+        
+        // Load HTML with UTF-8 encoding
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $html);
+        
+        // Clear errors
+        libxml_clear_errors();
+        
+        $xpath = new DOMXPath($dom);
+        
+        // Try each selector
+        foreach ($selectors as $selector) {
+            $query = '';
+            
+            if (isset($selector['id'])) {
+                $query = "//*[@id='" . $selector['id'] . "']";
+            } elseif (isset($selector['class'])) {
+                $query = "//*[contains(concat(' ', normalize-space(@class), ' '), ' " . $selector['class'] . " ')]";
+            }
+            
+            if (empty($query)) {
+                continue;
+            }
+            
+            $nodes = $xpath->query($query);
+            
+            if ($nodes && $nodes->length > 0) {
+                $parent_node = $nodes->item(0);
+                
+                // If looking for a child element
+                if (isset($selector['child'])) {
+                    $child_tag = $selector['child'];
+                    foreach ($parent_node->childNodes as $child) {
+                        if ($child->nodeType === XML_ELEMENT_NODE && $child->nodeName === $child_tag) {
+                            return $dom->saveHTML($child);
+                        }
+                    }
+                } else {
+                    return $dom->saveHTML($parent_node);
+                }
+            }
+        }
+        
+        return '';
     }
 }
 
