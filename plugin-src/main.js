@@ -112,15 +112,24 @@ function detectAndSetTargetElement() {
     
     // Hook into FireLine events to show/hide progress bar
     document.addEventListener('fireStart', () => {
-        NProgress.start();
+        // Prevent NProgress appendChild error when body element doesn't exist yet
+        if (document.body) {
+            NProgress.start();
+        }
     });
     
     document.addEventListener('fireEnd', () => {
-        NProgress.done();
+        // Prevent NProgress appendChild error when body element doesn't exist yet
+        if (document.body) {
+            NProgress.done();
+        }
     });
     
     document.addEventListener('fireError', () => {
-        NProgress.done();
+        // Prevent NProgress appendChild error when body element doesn't exist yet
+        if (document.body) {
+            NProgress.done();
+        }
     });
     
     // Prevent navigation to WordPress admin URLs
